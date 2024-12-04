@@ -7,18 +7,9 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
             margin: 0;
-            padding: 0;
-        }
-
-        .container {
-            width: 80%;
-            margin: 20px auto;
             padding: 20px;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            background-color: #f9f9f9;
         }
 
         h1 {
@@ -26,29 +17,41 @@
             color: #333;
         }
 
-        form {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-bottom: 20px;
+        .form-container {
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 
         input, button {
-            padding: 10px;
-            font-size: 14px;
-            border-radius: 5px;
-            border: 1px solid #ddd;
             width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            font-size: 14px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
         }
 
         button {
             background-color: #4CAF50;
             color: white;
+            border: none;
             cursor: pointer;
         }
 
         button:hover {
             background-color: #45a049;
+        }
+
+        .table-container {
+            width: 100%;
+            max-width: 800px;
+            margin: 20px auto;
         }
 
         table {
@@ -58,41 +61,43 @@
         }
 
         th, td {
-            padding: 12px;
-            text-align: left;
+            padding: 10px;
             border: 1px solid #ddd;
+            text-align: left;
+            font-size: 14px;
         }
 
         th {
-            background-color: #4CAF50;
-            color: white;
+            background-color: #f1f1f1;
         }
 
-        tr:nth-child(even) {
-            background-color: #f2f2f2;
+        td {
+            background-color: #fff;
         }
 
-        tr:hover {
-            background-color: #ddd;
+        tr:nth-child(even) td {
+            background-color: #f9f9f9;
+        }
+
+        .message {
+            text-align: center;
+            margin: 10px 0;
+            font-weight: bold;
         }
 
         .error-message {
             color: red;
-            font-weight: bold;
-            text-align: center;
         }
 
         .success-message {
             color: green;
-            font-weight: bold;
-            text-align: center;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>JSville Courier Management System</h1>
+    <h1>JSville Courier Management</h1>
 
+    <div class="form-container">
         <form id="packageForm">
             <input type="text" id="recipientName" placeholder="Recipient Name" required>
             <input type="number" id="packageId" placeholder="Package ID" required>
@@ -100,10 +105,10 @@
             <input type="number" id="weight" placeholder="Weight (kg)" required>
             <button type="submit">Add Package</button>
         </form>
+        <div id="message" class="message"></div>
+    </div>
 
-        <div id="errorMessage" class="error-message"></div>
-        <div id="successMessage" class="success-message"></div>
-
+    <div class="table-container">
         <table id="packageTable">
             <thead>
                 <tr>
@@ -126,7 +131,7 @@
         }
 
         function sortPackages() {
-            packages.sort((a, b) => a.weight - b.weight); // Sorting by weight (lightest to heaviest)
+            packages.sort((a, b) => a.weight - b.weight);
             renderTable();
         }
 
@@ -149,16 +154,16 @@
         function validatePackageData(data) {
             const { recipientName, packageId, deliveryAddress, weight } = data;
             if (!/^[a-zA-Z\s]+$/.test(recipientName)) {
-                return "Error: Invalid Recipient Name. Please use alphabetic characters only.";
+                return "Invalid Recipient Name. Use alphabetic characters only.";
             }
             if (isNaN(packageId) || packageId <= 0) {
-                return "Error: Invalid Package ID. Please enter numeric values only.";
+                return "Invalid Package ID. Enter a positive number.";
             }
             if (!/^[a-zA-Z\s]+$/.test(deliveryAddress)) {
-                return "Error: Invalid Delivery Address. It should not contain digits.";
+                return "Invalid Delivery Address. It should not contain digits.";
             }
             if (isNaN(weight) || weight <= 0) {
-                return "Error: Invalid Weight. Please enter a positive number.";
+                return "Invalid Weight. Enter a positive number.";
             }
             return null;
         }
@@ -172,18 +177,20 @@
             const weight = parseFloat(document.getElementById("weight").value.trim());
 
             const validationError = validatePackageData({ recipientName, packageId, deliveryAddress, weight });
+            const messageElement = document.getElementById("message");
+
             if (validationError) {
-                document.getElementById("errorMessage").innerText = validationError;
-                document.getElementById("successMessage").innerText = "";
+                messageElement.innerText = validationError;
+                messageElement.className = "message error-message";
                 return;
             }
 
-            document.getElementById("errorMessage").innerText = "";
-            document.getElementById("successMessage").innerText = "Package added successfully!";
+            messageElement.innerText = "Package added successfully!";
+            messageElement.className = "message success-message";
 
             const newPackage = { recipientName, packageId, deliveryAddress, weight };
             packages.push(newPackage);
-            sortPackages(); // Sort packages after adding a new one
+            sortPackages(); 
         });
     </script>
 </body>
