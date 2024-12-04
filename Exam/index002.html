@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSville Courier Management System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 80%;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        input, button {
+            padding: 10px;
+            font-size: 14px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            width: 100%;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        tr:hover {
+            background-color: #ddd;
+        }
+
+        .error-message {
+            color: red;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .success-message {
+            color: green;
+            font-weight: bold;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>JSville Courier Management System</h1>
+
+        <form id="packageForm">
+            <input type="text" id="recipientName" placeholder="Recipient Name" required>
+            <input type="number" id="packageId" placeholder="Package ID" required>
+            <input type="text" id="deliveryAddress" placeholder="Delivery Address" required>
+            <input type="number" id="weight" placeholder="Weight (kg)" required>
+            <button type="submit">Add Package</button>
+        </form>
+
+        <div id="errorMessage" class="error-message"></div>
+        <div id="successMessage" class="success-message"></div>
+
+        <table id="packageTable">
+            <thead>
+                <tr>
+                    <th>Recipient Name</th>
+                    <th>Package ID</th>
+                    <th>Delivery Address</th>
+                    <th>Weight (kg)</th>
+                    <th>Tracking Code</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <script>
+        let packages = [];
+
+        function generateTrackingCode(packageId, weight) {
+            return "0b" + (packageId << 4 | weight).toString(2);
+        }
+
+        function sortPackages() {
+            packages.sort((a, b) => a.weight - b.weight); // Sorting by weight (lightest to heaviest)
+            renderTable();
+        }
+
+        function renderTable() {
+            const tbody = document.querySelector("#packageTable tbody");
+            tbody.innerHTML = "";
+            packages.forEach(pkg => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${pkg.recipientName}</td>
+                    <td>${pkg.packageId}</td>
+                    <td>${pkg.deliveryAddress}</td>
+                    <td>${pkg.weight}</td>
+                    <td>${generateTrackingCode(pkg.packageId, pkg.weight)}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function validatePackageData(data) {
+            const { recipientName, packageId, deliveryAddress, weight } = data;
+            if (!/^[a-zA-Z\s]+$/.test(recipientName)) {
+                return "Error: Invalid Recipient Name. Please use alphabetic characters only.";
+            }
+            if (isNaN(packageId) || packageId <= 0) {
+                return "Error: Invalid Package ID. Please enter numeric values only.";
+            }
+            if (!/^[a-zA-Z\s]+$/.test(deliveryAddress)) {
+                return "Error: Invalid Delivery Address. It should not contain digits.";
+            }
+            if (isNaN(weight) || weight <= 0) {
+                return "Error: Invalid Weight. Please enter a positive number.";
+            }
+            return null;
+        }
+
+        document.getElementById("packageForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            const recipientName = document.getElementById("recipientName").value.trim();
+            const packageId = parseInt(document.getElementById("packageId").value.trim());
+            const deliveryAddress = document.getElementById("deliveryAddress").value.trim();
+            const weight = parseFloat(document.getElementById("weight").value.trim());
+
+            const validationError = validatePackageData({ recipientName, packageId, deliveryAddress, weight });
+            if (validationError) {
+                document.getElementById("errorMessage").innerText = validationError;
+                document.getElementById("successMessage").innerText = "";
+                return;
+            }
+
+            document.getElementById("errorMessage").innerText = "";
+            document.getElementById("successMessage").innerText = "Package added successfully!";
+
+            const newPackage = { recipientName, packageId, deliveryAddress, weight };
+            packages.push(newPackage);
+            sortPackages(); // Sort packages after adding a new one
+        });
+    </script>
+</body>
+</html>
