@@ -29,7 +29,7 @@ function validatePackageData(recipientName, packageId, deliveryAddress, weight) 
 
 // Function to generate the tracking code
 function generateTrackingCode(packageId, weight) {
-    return (packageId << 4 | weight).toString(2);
+    return "ob" + (packageId << 4 | weight).toString(2);
 }
 
 // Sorting function: Sort by weight (lightest to heaviest)
@@ -94,3 +94,4 @@ document.getElementById("packageForm").addEventListener("submit", function(event
     // Sort and display packages
     sortPackages();
 });
+
