@@ -4,20 +4,57 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JSville Courier Management System</title>
+    <style>
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        table{
+            width: 80%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: #fff;
+        }
+
+        .form-container {
+            width: 80%;
+            margin-bottom: 20px;
+            background-color: #fff;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .error {
+            color: red;
+            font-size: 14px;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 20px;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+    </style>
 </head>
 <body>
-    <h1>Webserver 1</h1>
-    <h1>Welcome to JSville Courier Management System!</h1>
-    
-    <h3>Enter package details below:</h3>
-    <form id="packageForm">
-        <label for="recipientName">Recipient Name: </label><input type="text" id="recipientName" required><br>
-        <label for="packageId">Package ID: </label><input type="text" id="packageId" required><br>
-        <label for="deliveryAddress">Delivery Address: </label><input type="text" id="deliveryAddress" required><br>
-        <label for="weight">Weight (kg): </label><input type="text" id="weight" required><br>
-        <button type="submit">Add Package</button>
-    </form>
-    
+    <div class="form-container">
+        <h1>Webserver 1</h1>
+        <h1>Welcome to JSville Courier Management System!</h1>
+        
+        <h3>Enter package details below:</h3>
+        <form id="packageForm">
+            <label for="recipientName">Recipient Name: </label><input type="text" id="recipientName" required><br>
+            <label for="packageId">Package ID: </label><input type="text" id="packageId" required><br>
+            <label for="deliveryAddress">Delivery Address: </label><input type="text" id="deliveryAddress" required><br>
+            <label for="weight">Weight (kg): </label><input type="text" id="weight" required><br>
+            <button type="submit">Add Package</button>
+        </form>
+        <div class="error" id="errorMessage"></div>
+    </div>
     <h3>Sorted Packages:</h3>
     <table id="packageTable">
         <thead>
